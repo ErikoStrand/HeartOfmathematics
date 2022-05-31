@@ -7,7 +7,7 @@ pygame.font.init()
 
 # colors
 bg = (200, 200, 200)
-line_color = (255, 224, 189)
+line_color = (255, 229, 160)
 dot_color = (17, 0, 2)
 
 # location
@@ -66,6 +66,10 @@ while 1:
                 number_input += event.unicode
                 display(50, 50, number_input)
 
+            elif event.key == pygame.K_BACKSPACE:
+                number_input = number_input[:-1]
+                display(50, 50, number_input)
+
             elif event.key == pygame.K_RETURN:
                 if number_input == "":
                     pass
@@ -74,7 +78,6 @@ while 1:
                     draw_lines()
                     draw_dot()
                     number_input = ""
-
 
     pygame.display.flip()
 

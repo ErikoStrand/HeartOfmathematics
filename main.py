@@ -1,5 +1,6 @@
 import pygame, sys
 import math
+import numpy as np
 import time
 # init
 pygame.init()
@@ -9,28 +10,36 @@ pygame.font.init()
 bg = (200, 200, 200)
 line_color = (255, 229, 160)
 dot_color = (17, 0, 2)
-
-# location
-dot_locations = []
-dot_values = {}
-
+active_box_color = (20, 255, 20)
+deactivated_box_color = (255, 20, 20)
+middle_color = (110, 110, 110)
 # values
 width = 900
 height = 900
 number_input = ""
+circle_input = ""
+circle_amount = False
+random_button = False
+# location
+dot_locations = []
+dot_values = {}
+random_color_button = pygame.Rect(width - 100, height - 880, 50, 50)
 
 #start up values
 screen = pygame.display.set_mode((width, height))
 screen.fill(bg)
 font = pygame.font.Font("Pokemon GB.ttf", 10)
+middle_font = pygame.font.Font("Pokemon GB.ttf", 80)
 
-def display(x, y, value):
+def display(x, y, value, text, length):
     # clear # left top width height2
-    pygame.draw.rect(screen, bg, (x, y, 100, 50))
-    draw = font.render(value, False, (0, 0, 0))
+    #print(pygame.font.Font.size(font, text + value))
+    pygame.draw.rect(screen, bg, (x, y, length, 10))
+    draw = font.render(text + value, False, (0, 0, 0))
     screen.blit(draw, (x, y))
 
 def circle_draw(amount, radius, size):
+    pygame.draw.circle(screen, bg, (width / 2, height / 2), 450)
     for i in range(amount):
         x = int(width/2 + radius * math.cos(math.radians(360/amount * i)))
         y = int(height/2 + radius * math.sin(math.radians(360/amount * i)))
@@ -44,40 +53,91 @@ def draw_dot():
 def variable_create():
     for i in range(len(dot_locations)):
         dot_values[i] = [i]
-        for o in range(2000):
+        for o in range(500):
             dot_values[i].append(len(dot_locations) + i)
             dot_values[i].append(len(dot_locations) * (o + 2) + i)
 
 def draw_lines():
+
+    if random_button == True:
+        r, g, b = np.random.randint(0, 255, 3)
+        color = (r, g, b)
+
+    if random_button == False:
+        color = line_color
+
+    pygame.draw.circle(screen, bg, (width/2, height/2), 400)
+
+    a, b = pygame.font.Font.size(middle_font, str(number_input))
+    draw = middle_font.render(str(number_input), False, middle_color)
+    screen.blit(draw, (450 - a/2, 400))
+
     for x in range(len(dot_locations)):
         for y in range(len(dot_locations)):
             if dot_values[x][0] * int(number_input) in dot_values[y]:
-                pygame.draw.line(screen, line_color, (dot_locations[y][0], dot_locations[y][1]), (dot_locations[x][0], dot_locations[x][1]), 1)
+                pygame.draw.line(screen, color, (dot_locations[y][0], dot_locations[y][1]), (dot_locations[x][0], dot_locations[x][1]), 1)
 
 circle_draw(250, 400, 3)
 variable_create()
+display(20, 50, number_input, "Multiply: ", 300)
+display(20, 75, circle_input, "DPC: ", 250)
+pygame.draw.rect(screen, active_box_color, (10, 50, 8, 8))
+pygame.draw.rect(screen, deactivated_box_color, (10, 75, 8, 8))
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if random_color_button.collidepoint(event.pos):
+                random_button = not random_button
+
+            color = active_box_color if random_button else deactivated_box_color
+            pygame.draw.rect(screen, color, random_color_button)
 
         if event.type == pygame.KEYDOWN:
-            if event.unicode.isnumeric():
-                number_input += event.unicode
-                display(50, 50, number_input)
+            if event.key == pygame.K_RSHIFT:
+                circle_amount = not circle_amount
+                if circle_amount:
+                    pygame.draw.rect(screen, deactivated_box_color, (10, 50, 8, 8))
+                    pygame.draw.rect(screen, active_box_color, (10, 75, 8, 8))
+                if not circle_amount:
+                    pygame.draw.rect(screen, deactivated_box_color, (10, 75, 8, 8))
+                    pygame.draw.rect(screen, active_box_color, (10, 50, 8, 8))
 
-            elif event.key == pygame.K_BACKSPACE:
-                number_input = number_input[:-1]
-                display(50, 50, number_input)
+            if not circle_amount:
+                if event.unicode.isnumeric():
+                    number_input += event.unicode
+                    display(20, 50, number_input, "Multiply: ", 300)
 
-            elif event.key == pygame.K_RETURN:
+            if circle_amount:
+                if event.unicode.isnumeric():
+                    circle_input += event.unicode
+                    display(20, 75, circle_input, "DPC: ", 250)
+
+            if event.key == pygame.K_RETURN and circle_amount:
+                dot_locations = []
+                circle_draw(int(circle_input), 400, 3)
+                variable_create()
+                circle_input = ""
+
+            if event.key == pygame.K_BACKSPACE:
+                if not circle_amount:
+                    number_input = number_input[:-1]
+                    display(20, 50, number_input, "Multiply: ", 300)
+
+                if circle_amount:
+                    circle_input = circle_input[:-1]
+                    display(20, 75, circle_input, "DPC: ", 250)
+
+            if event.key == pygame.K_RETURN and not circle_amount:
                 if number_input == "":
                     pass
                 else:
-                    screen.fill(bg)
                     draw_lines()
                     draw_dot()
                     number_input = ""
+                    draw = font.render("0", False, (0, 0, 0))
+                    screen.blit(draw, (dot_locations[0][0] + 5, dot_locations[0][1] - 3))
 
     pygame.display.flip()
 

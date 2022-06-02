@@ -1,13 +1,13 @@
 # HeartOfmathematics
 It's called something but i cant quite remember the name - https://www.youtube.com/watch?v=qhbuKbxJsk8
 
-Input: 3
+Input: 231, Dots: 1000, (With Random Color)
 
-  ![image](https://user-images.githubusercontent.com/75546186/171199075-788f66bb-2016-4a4a-b11f-c95856ca4c98.png)
+  ![image](https://user-images.githubusercontent.com/75546186/171682749-a5c5a06e-10be-456d-b00d-2dbfdd92d84c.png)
 
-Input: 7
+Input: 51, Dots: 2500, (With Random Color)
 
-  ![image](https://user-images.githubusercontent.com/75546186/171199145-97a972d9-be65-4b8c-a476-b6d25e35c018.png)
+  ![gif](https://gyazo.com/e0bd6062a246bf3784212fad5e647e08)
 
 Input: 666 (With random color)
 

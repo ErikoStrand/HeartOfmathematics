@@ -13,6 +13,7 @@ dot_color = (17, 0, 2)
 active_box_color = (20, 255, 20)
 deactivated_box_color = (255, 20, 20)
 middle_color = (110, 110, 110)
+
 # values
 width = 900
 height = 900
@@ -20,12 +21,13 @@ number_input = ""
 circle_input = ""
 circle_amount = False
 random_button = False
+
 # location
 dot_locations = []
 dot_values = {}
 random_color_button = pygame.Rect(width - 100, height - 880, 50, 50)
 
-#start up values
+#start up stuff
 screen = pygame.display.set_mode((width, height))
 screen.fill(bg)
 font = pygame.font.Font("Pokemon GB.ttf", 10)
@@ -50,12 +52,16 @@ def draw_dot():
     for i in range(len(dot_locations)):
         pygame.draw.circle(screen, dot_color, (dot_locations[i][0], dot_locations[i][1]), 3)
 
-def variable_create():
+def variable_create(input_, circles):
     for i in range(len(dot_locations)):
         dot_values[i] = [i]
-        for o in range(500):
-            dot_values[i].append(len(dot_locations) + i)
-            dot_values[i].append(len(dot_locations) * (o + 2) + i)
+        add = i * input_
+        while 1:
+            if add <= circles - 1:
+                dot_values[i].append(add)
+                break
+            elif add >= circles - 1:
+                add -= circles
 
 def draw_lines():
 
@@ -73,12 +79,10 @@ def draw_lines():
     screen.blit(draw, (450 - a/2, 400))
 
     for x in range(len(dot_locations)):
-        for y in range(len(dot_locations)):
-            if dot_values[x][0] * int(number_input) in dot_values[y]:
-                pygame.draw.line(screen, color, (dot_locations[y][0], dot_locations[y][1]), (dot_locations[x][0], dot_locations[x][1]), 1)
+        pygame.draw.line(screen, color, (dot_locations[dot_values[x][0]]), (dot_locations[dot_values[x][1]]), 1)
+        #print(dot_values[x][0], dot_values[x][1], "Start:", dot_locations[dot_values[x][0]], "End:", dot_locations[dot_values[x][1]])
 
 circle_draw(250, 400, 3)
-variable_create()
 display(20, 50, number_input, "Multiply: ", 300)
 display(20, 75, circle_input, "DPC: ", 250)
 pygame.draw.rect(screen, active_box_color, (10, 50, 8, 8))
@@ -117,7 +121,6 @@ while 1:
             if event.key == pygame.K_RETURN and circle_amount:
                 dot_locations = []
                 circle_draw(int(circle_input), 400, 3)
-                variable_create()
                 circle_input = ""
 
             if event.key == pygame.K_BACKSPACE:
@@ -133,11 +136,14 @@ while 1:
                 if number_input == "":
                     pass
                 else:
+                    dot_values = {}
+                    variable_create(int(number_input), len(dot_locations))
                     draw_lines()
                     draw_dot()
                     number_input = ""
                     draw = font.render("0", False, (0, 0, 0))
                     screen.blit(draw, (dot_locations[0][0] + 5, dot_locations[0][1] - 3))
+
 
     pygame.display.flip()
 

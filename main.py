@@ -61,7 +61,18 @@ def variable_create(input_, circles):
                 dot_values[i].append(add)
                 break
             elif add >= circles - 1:
-                add -= circles
+                if add >= 100000000:
+                    add -= 90000000
+                if add >= 10000000:
+                    add -= 9000000
+                if add >= 1000000:
+                    add -= 900000
+                if add >= 100000:
+                    add -= 90000
+                if add >= 10000:
+                    add -= 9000
+                else:
+                    add -= circles
 
 def draw_lines():
 

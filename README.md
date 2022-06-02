@@ -7,7 +7,7 @@ Input: 231, Dots: 1000, (With Random Color)
 
 Input: 51, Dots: 2500, (With Random Color)
 
-  ![gif](https://gyazo.com/e0bd6062a246bf3784212fad5e647e08)
+  ![screen-gif](https://gyazo.com/e0bd6062a246bf3784212fad5e647e08)
 
 Input: 666 (With random color)
 
